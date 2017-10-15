@@ -6,11 +6,12 @@
 
     <v-layout row wrap class="mb-4 mt-3">
         <v-flex xs12>
-            <v-carousel>
+            <v-carousel style="cursor:pointer">
                 <v-carousel-item
                   v-for="meetup in meetups"
                   :src="meetup.imageUrl"
-                  :key="meetup.id">
+                  :key="meetup.id"
+                  @click="onLoadMeetup(meetup.id)">
                   <div class="title">
                     {{ meetup.title }}
                   </div>
@@ -49,6 +50,11 @@ export default {
         { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Krak%C3%B3w_-_Sukiennice_1.jpg', id: 'asdasd2', title: 'Meetup in Cracow' },
         { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Sosnowiec-Zag%C3%B3rze.Ulica_Stefana_Kisielewskiego..JPG', id: 'asdasd3', title: 'Meetup in Sosnowiec' }
       ]
+    }
+  },
+  methods: {
+    onLoadMeetup (id) {
+      this.$router.push('/meetups/' + id)
     }
   }
 }
