@@ -5,7 +5,7 @@
 <v-container>
     <v-layout row wrap>
         <v-flex xs12 sm10 offset-sm1>
-            <v-card class="info">
+            <v-card>
                 <v-container fluid>
                     <v-layout row>
                         <v-flex xs5>
@@ -14,13 +14,14 @@
                         <v-flex xs7>
                             <v-card-title class="pb-2 pt-1">
                                 <div>
-                                    <h5 class="white--text">My Meetup</h5>
+                                    <h5>My Meetup</h5>
                                     <div>17th July 2017</div>
                                 </div>
                             </v-card-title>
-                            <v-card-actions dark class="mt-0">
-                              <v-btn flat dark to="/meetups/1">
-                                <v-icon left dark>arrow_forward</v-icon>
+                            <v-card-actions  class="mt-0">
+                              <v-spacer></v-spacer>
+                              <v-btn   to="/meetups/1">
+                                <v-icon left >arrow_forward</v-icon>
                                 View Meetup
                               </v-btn>
                             </v-card-actions>
