@@ -59,11 +59,33 @@
               </v-layout>
               <v-layout row>
                 <v-flex xs12 sm6 offset-sm3>
+                  <h5>Choose a Date & time</h5>
+                </v-flex>
+              </v-layout>
+              <v-layout row class="mb-2">
+                <v-flex xs12 sm6 offset-sm3>
+                  <v-date-picker v-model="date"></v-date-picker>
+                  <p>
+                    {{ date }}
+                  </p>
+                </v-flex>
+              </v-layout row>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3 >
+                  <v-time-picker format="24hr" v-model="time"></v-time-picker>
+                  <p>
+                    {{ time }}
+                  </p>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs12 sm6 offset-sm3>
                   <v-spacer></v-spacer>
                   <v-btn
                     class="primary"
                     :disabled="!formIsValid"
                     type="submit">Create Meetup</v-btn>
+                    {{ subittableDateTime }}
                 </v-flex>
               </v-layout>
             </form>
@@ -81,7 +103,9 @@
         title: '',
         location: '',
         imageUrl: '',
-        description: ''
+        description: '',
+        date: new Date(),
+        time: new Date()
       }
     },
     computed: {
@@ -90,6 +114,20 @@
         this.location !== '' &&
         this.description !== '' &&
         this.imageUrl !== ''
+      },
+      subittableDateTime () {
+        const date = new Date(this.date)
+        if (typeof this.time === 'string') {
+          const hours = this.time.match(/^(\d+)/)[1]
+          const minutes = this.time.match(/:(\d+)/)[1]
+          date.setHours(hours)
+          date.setMinutes(minutes)
+        } else {
+          date.setHours(this.time.getHours())
+          date.setMinutes(this.time.getMinutes())
+        }
+        console.log(date)
+        return date
       }
     },
     methods: {
