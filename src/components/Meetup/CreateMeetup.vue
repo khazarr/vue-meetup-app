@@ -115,7 +115,7 @@
         this.description !== '' &&
         this.imageUrl !== ''
       },
-      subittableDateTime () {
+      submitableDateAndTime () {
         const date = new Date(this.date)
         if (typeof this.time === 'string') {
           const hours = this.time.match(/^(\d+)/)[1]
@@ -126,7 +126,6 @@
           date.setHours(this.time.getHours())
           date.setMinutes(this.time.getMinutes())
         }
-        console.log(date)
         return date
       }
     },
@@ -140,7 +139,7 @@
           location: this.location,
           imageUrl: this.imageUrl,
           description: this.description,
-          date: new Date()
+          date: this.submitableDateAndTime
         }
         this.$store.dispatch('createMeetup', meetupData)
         this.$router.push('/meetups')
