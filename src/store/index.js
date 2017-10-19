@@ -9,14 +9,14 @@ export const store = new Vuex.Store({
       { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Krak%C3%B3w_-_Sukiennice_1.jpg',
         id: 'asdasd2',
         title: 'Meetup in Cracow',
-        date: '2017-07-17',
+        date: new Date(),
         location: 'Cracow',
         description: 'Pierogi in Craow'
       },
       { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Sosnowiec-Zag%C3%B3rze.Ulica_Stefana_Kisielewskiego..JPG',
         id: 'asdasd3',
         title: 'Meetup in Sosnowiec',
-        date: '2017-07-19',
+        date: new Date(),
         location: 'Sosnowiec',
         description: 'Cool meetup in Sosnowiec'
       }
