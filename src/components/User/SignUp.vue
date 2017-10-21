@@ -8,7 +8,7 @@
           <v-card>
             <v-card-text>
               <v-container>
-                <form>
+                <form @submit.prevent="onSignup">
                   <v-layout row>
                     <v-flex xs12>
                       <v-text-field
@@ -76,12 +76,21 @@ export default {
   computed: {
     comparePasswords () {
       return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
+    },
+    user () {
+      return this.$store.getters.user
+    }
+  },
+  watch: {
+    user (value) {
+      if (value !== null && value !== undefined) {
+        this.$router.push('/')
+      }
     }
   },
   methods: {
     onSignup () {
-      // Vuex
-      console.log({email: this.email, pass: this.password, compPass: this.confirmPassword})
+      this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
     }
   }
 }
