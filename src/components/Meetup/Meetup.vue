@@ -8,6 +8,10 @@
             <v-card>
                 <v-card-title>
                     <h4 class="primary--text">{{ meetup.title }}</h4>
+                    <template v-if="userIsCreator">
+                      <v-spacer></v-spacer>
+                      <app-edit-meetup-details-dialog></app-edit-meetup-details-dialog>
+                    </template>
                 </v-card-title>
                 <v-card-media :src="meetup.imageUrl" height="400px"></v-card-media>
                 <v-card-text>
@@ -35,6 +39,15 @@
     computed: {
       meetup () {
         return this.$store.getters.loadedMeetup(this.id)
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userIsCreator () {
+        if (!this.userIsAuthenticated) {
+          return false
+        }
+        return this.$store.getters.user.id === this.meetup.creatorId
       }
     }
   }
