@@ -65,7 +65,6 @@
           title: this.editedTitle,
           description: this.editedDescription
         }
-        console.log(payload)
         this.$store.dispatch('uptadeMeetupData', payload)
       }
     }
