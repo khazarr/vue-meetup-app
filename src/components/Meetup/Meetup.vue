@@ -31,6 +31,10 @@
                     <div class="primary--text">
                         <h6>{{ meetup.date | date }} - {{ meetup.location }} </h6>
                     </div>
+                    <div v-if="userIsCreator">
+                      <app-edit-meetup-date-dialog :meetup="meetup"></app-edit-meetup-date-dialog>
+                      <app-edit-meetup-time-dialog :meetup="meetup"></app-edit-meetup-time-dialog>
+                    </div>
                     <div>
                       {{ meetup.description }}
                     </div>
