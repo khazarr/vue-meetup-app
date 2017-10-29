@@ -79,6 +79,7 @@
           menuItems = [
             { icon: 'accessibility', title: 'View meetups', link: '/meetups' },
             { icon: 'room', title: 'Organize Meetup', link: '/meetup/new' },
+            { icon: 'question_answer', title: 'Live Chat', link: '/chat' },
             { icon: 'person', title: 'Profile', link: '/profile' }
           ]
         }

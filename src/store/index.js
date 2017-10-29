@@ -74,6 +74,15 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    addNewMessage ({commit}, payload) {
+      commit('setLoading', true)
+      firebase.database().ref('/chat')
+        .push(payload)
+        .then(data => {
+          commit('setLoading', false)
+          console.log(data)
+        })
+    },
     registerUserForMeetup ({commit, getters}, payload) {
       commit('setLoading', true)
       const user = getters.user
@@ -203,6 +212,7 @@ export const store = new Vuex.Store({
             commit('clearError')
             const newUser = {
               id: user.uid,
+              email: user.email,
               registeredMeetups: [],
               fbKeys: {}
             }
@@ -226,6 +236,7 @@ export const store = new Vuex.Store({
             commit('clearError')
             const newUser = {
               id: user.uid,
+              email: user.email,
               registeredMeetups: [],
               fbKeys: {}
             }
@@ -243,6 +254,7 @@ export const store = new Vuex.Store({
     autoSignIn ({commit}, payload) {
       commit('setUser', {
         id: payload.uid,
+        email: payload.email,
         registeredMeetups: [],
         fbKeys: {}
       })
@@ -260,6 +272,7 @@ export const store = new Vuex.Store({
           }
           const updatedUser = {
             id: getters.user.id,
+            email: getters.user.email,
             registeredMeetups: registeredMeetups,
             fbKeys: swappedPairs
           }

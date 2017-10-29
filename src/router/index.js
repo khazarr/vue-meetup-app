@@ -7,6 +7,7 @@ import CreateMeetup from '@/components/Meetup/CreateMeetup'
 import Profile from '@/components/User/Profile'
 import SignIn from '@/components/User/SignIn'
 import SignUp from '@/components/User/SignUp'
+import ChatPage from '@/components/Chat/ChatPage'
 import AuthGuard from './auth-guard'
 
 Vue.use(Router)
@@ -45,6 +46,11 @@ export default new Router({
       path: '/signup',
       name: 'SignUp',
       component: SignUp
+    },
+    {
+      path: '/chat',
+      name: 'Chat',
+      component: ChatPage
     },
     {
       path: '/signin',
