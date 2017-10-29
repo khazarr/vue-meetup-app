@@ -22,11 +22,15 @@ export const store = new Vuex.Store({
         description: 'Cool meetup in Sosnowiec'
       }
     ],
+    chatMessages: [],
     user: null,
     loading: false,
     error: null
   },
   mutations: {
+    setLoadedChatMessages (state, payload) {
+      state.chatMessages = payload
+    },
     registerUserForMeetup (state, payload) {
       const id = payload.id
       if (state.user.registeredMeetups.findIndex(meetup => meetup.id === id) >= 0) {
@@ -74,10 +78,15 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    addNewMessage ({commit}, payload) {
+    addNewChatMessage ({commit}, payload) {
       commit('setLoading', true)
+      const message = {
+        text: payload.text,
+        user: payload.user,
+        date: payload.date.toISOString()
+      }
       firebase.database().ref('/chat')
-        .push(payload)
+        .push(message)
         .then(data => {
           commit('setLoading', false)
           console.log(data)
@@ -307,6 +316,9 @@ export const store = new Vuex.Store({
     },
     featuredMeetups (state, getters) {
       return getters.loadedMeetups.slice(0, 5)
+    },
+    chatMessages (state) {
+      return state.chatMessages
     },
     user (state) {
       return state.user

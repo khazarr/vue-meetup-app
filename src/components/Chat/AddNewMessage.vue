@@ -33,10 +33,11 @@ export default {
     onAddMessage () {
       const message = {
         text: this.message,
-        user: this.user.email
+        user: this.user.email,
+        date: new Date()
       }
-      console.log(message)
-      this.$store.dispatch('addNewMessage', message)
+      this.$store.dispatch('addNewChatMessage', message)
+      this.message = ''
     }
   }
 }
