@@ -1,6 +1,6 @@
 <template>
 <v-container class="mt-1">
-<v-layout row>
+<v-layout row class="messages" >
   <v-flex xs12>
     <Messages
       v-for="message in chatMessages"
@@ -11,8 +11,13 @@
       :key = "message.id"
       >
     </Messages>
-    <AddNewMessage :user="user" ></AddNewMessage>
+
   </v-flex>
+</v-layout>
+<v-layout row>
+<v-flex xs12>
+<AddNewMessage :user="user" ></AddNewMessage>
+</v-flex>
 </v-layout>
 </v-container>
 
@@ -54,6 +59,18 @@ export default {
       }
       this.$store.commit('setLoadedChatMessages', chatMessages)
     })
+  },
+  mounted () {
+    const chatBody = document.querySelector('.messages')
+    chatBody.scrollTop = chatBody.scrolHeight - chatBody.clientHeight
+    console.log(chatBody)
   }
 }
 </script>
+
+<style scoped>
+.messages{
+  height:700px;
+  overflow: auto;
+}
+</style>

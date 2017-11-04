@@ -48,6 +48,9 @@
        newDate.setUTCDate(newDay)
        newDate.setUTCMonth(newMonth)
        newDate.setUTCFullYear(newYear)
+       console.log(newDay)
+       console.log(newMonth)
+       console.log(newYear)
        this.$store.dispatch('uptadeMeetupData', {
          id: this.meetup.id,
          date: newDate

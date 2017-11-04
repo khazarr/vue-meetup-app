@@ -67,6 +67,10 @@ export default {
     onLoadMeetup (id) {
       this.$router.push('/meetups/' + id)
     }
+  },
+  created () {
+    this.$store.dispatch('fetchICeSkatePicturesFromPixbay')
+    this.$store.dispatch('fetchIceSkateData')
   }
 }
 </script>

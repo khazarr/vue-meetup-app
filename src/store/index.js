@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,9 @@ export const store = new Vuex.Store({
     chatMessages: [],
     user: null,
     loading: false,
-    error: null
+    error: null,
+    skatePictures: [],
+    skateDataObtained: false
   },
   mutations: {
     setLoadedChatMessages (state, payload) {
@@ -75,6 +78,12 @@ export const store = new Vuex.Store({
     },
     clearError (state) {
       state.error = null
+    },
+    setSkatePictures (state, payload) {
+      state.skatePictures = payload
+    },
+    skateDataObtainedSucessfully (state) {
+      state.skateDataObtained = true
     }
   },
   actions: {
@@ -188,7 +197,26 @@ export const store = new Vuex.Store({
         .catch((error) => {
           console.log(error)
         })
-      // Reach out to firebase and store it
+    },
+    createMeetupWithRandomImage ({commit}, payload) {
+      const meetup = {
+        title: payload.title,
+        location: 'Lodowisko Cracovia',
+        description: payload.description,
+        date: payload.date.toISOString(),
+        imageUrl: payload.imageUrl
+      }
+      firebase.database().ref('meetups').push(meetup)
+        .then((data) => {
+          const key = data.key
+          commit('createMeetup', {
+            ...meetup,
+            id: key
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     uptadeMeetupData ({commit}, payload) {
       commit('setLoading', true)
@@ -268,6 +296,74 @@ export const store = new Vuex.Store({
         fbKeys: {}
       })
     },
+    fetchIceSkateData ({commit, dispatch, getters}) {
+      // to do - run only ONCE, do not add the same meetups
+      if (!getters.getSkateDataObtainedStatus) {
+        commit('setLoading', true)
+        axios.get('http://localhost:8081/scrape')
+          .then(res => {
+            console.log(res.data)
+            const arrayPictures = getters.getSkatePicturesArray
+            res.data.map((event, i) => {
+              console.log(event.date)
+              console.log(event.hours[0])
+              const year = event.date.split('.')[2]
+              const month = event.date.split('.')[1] - 1
+              const day = event.date.split('.')[0]
+              const hour = event.hours[0].split('.')[0]
+              let minutes = event.hours[0].split('.')[1]
+              let meetupDate
+              if (hour && minutes) {
+                minutes.indexOf('*') !== -1 ? minutes = minutes.slice(0, -1) : minutes
+                meetupDate = new Date(
+                  year,
+                  month,
+                  day,
+                  hour,
+                  minutes,
+                  0,
+                  0
+                )
+              } else {
+                meetupDate = new Date(
+                  year,
+                  month,
+                  day,
+                  0,
+                  0,
+                  0,
+                  0
+                )
+              }
+              console.log(arrayPictures[i])
+              const SkateMeetup = {
+                title: event.day + ' - dawaj na łyżwy!',
+                description: 'Godziny ślizgawek: ' + event.hours.toString(),
+                date: meetupDate,
+                imageUrl: arrayPictures[i]
+              }
+              dispatch('createMeetupWithRandomImage', SkateMeetup)
+              commit('skateDataObtainedSucessfully')
+            })
+            commit('setLoading', false)
+          })
+          .catch(err => {
+            commit('setLoading', false)
+            console.log(err)
+          })
+      }
+    },
+    fetchICeSkatePicturesFromPixbay ({commit}) {
+      axios.get('https://pixabay.com/api/?key=6932745-a00e3da6a9e2cc1f584da7044&q=hockey&image_type=photo%3Fper_page&pretty=true')
+        .then(response => {
+          // console.log(response.data.hits)
+          const arrayPictures = []
+          response.data.hits.map(picture => {
+            arrayPictures.push(picture.webformatURL)
+          })
+          commit('setSkatePictures', arrayPictures)
+        })
+    },
     fetchUserData ({commit, getters}) {
       commit('setLoading', true)
       firebase.database().ref('/users/' + getters.user.id + '/registrations/').once('value')
@@ -328,6 +424,12 @@ export const store = new Vuex.Store({
     },
     loading (state) {
       return state.loading
+    },
+    getSkatePicturesArray (state) {
+      return state.skatePictures
+    },
+    getSkateDataObtainedStatus (state) {
+      return state.skateDataObtained
     }
   }
 })
