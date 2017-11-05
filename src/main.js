@@ -43,6 +43,7 @@ new Vue({
         this.$store.dispatch('fetchUserData')
       }
     })
+    this.$store.dispatch('fetchICeSkatePicturesFromPixbay')
     this.$store.dispatch('loadMeetups')
   }
 })

@@ -133,13 +133,13 @@ export const store = new Vuex.Store({
           commit('setLoading', false)
         })
     },
-    loadMeetups ({commit}) {
+    loadMeetups ({commit, getters, dispatch}) {
       // firebase.database().ref('meetups').on('value') on realtime change
       commit('setLoading', true)
+      const meetups = []
       firebase.database().ref('meetups').once('value')
       .then(
         (data) => {
-          const meetups = []
           const obj = data.val()
           for (let key in obj) {
             meetups.push({
@@ -153,7 +153,73 @@ export const store = new Vuex.Store({
             })
           }
           commit('setLoadedMeetups', meetups)
-          commit('setLoading', false)
+        }
+      )
+      .then(
+        (resp) => {
+          if (!getters.getSkateDataObtainedStatus) {
+            commit('setLoading', true)
+            axios.get('http://localhost:8081/scrape')
+              .then(res => {
+                const arrayPictures = getters.getSkatePicturesArray
+                res.data.map((event, i) => {
+                  const year = event.date.split('.')[2]
+                  const month = event.date.split('.')[1] - 1
+                  const day = event.date.split('.')[0]
+                  const hour = event.hours[0].split('.')[0]
+                  let minutes = event.hours[0].split('.')[1]
+                  let meetupDate
+                  if (hour && minutes) {
+                    minutes.indexOf('*') !== -1 ? minutes = minutes.slice(0, -1) : minutes
+                    meetupDate = new Date(
+                      year,
+                      month,
+                      day,
+                      hour,
+                      minutes,
+                      0,
+                      0
+                    )
+                  } else {
+                    meetupDate = new Date(
+                      year,
+                      month,
+                      day,
+                      0,
+                      0,
+                      0,
+                      0
+                    )
+                  }
+                  // console.log(arrayPictures[i])
+                  const SkateMeetup = {
+                    title: event.day + ' - dawaj na łyżwy!',
+                    description: 'Godziny ślizgawek: ' + event.hours.toString(),
+                    date: meetupDate,
+                    imageUrl: arrayPictures[i]
+                  }
+                  // check if this event already exist in current meetups
+                  // console.log(SkateMeetup)
+
+                  let alreadyExists = false
+                  meetups.map(meetup => {
+                    if (meetup.date === meetupDate.toISOString()) {
+                      alreadyExists = true
+                    }
+                  })
+
+                  if (!alreadyExists) {
+                    dispatch('createMeetupWithRandomImage', SkateMeetup)
+                  }
+                })
+                commit('setLoading', false)
+                commit('skateDataObtainedSucessfully')
+              })
+              .catch(err => {
+                commit('setLoading', false)
+                console.log(err)
+              })
+          }
         }
       )
       .catch(
@@ -295,63 +361,6 @@ export const store = new Vuex.Store({
         registeredMeetups: [],
         fbKeys: {}
       })
-    },
-    fetchIceSkateData ({commit, dispatch, getters}) {
-      // to do - run only ONCE, do not add the same meetups
-      if (!getters.getSkateDataObtainedStatus) {
-        commit('setLoading', true)
-        axios.get('http://localhost:8081/scrape')
-          .then(res => {
-            console.log(res.data)
-            const arrayPictures = getters.getSkatePicturesArray
-            res.data.map((event, i) => {
-              console.log(event.date)
-              console.log(event.hours[0])
-              const year = event.date.split('.')[2]
-              const month = event.date.split('.')[1] - 1
-              const day = event.date.split('.')[0]
-              const hour = event.hours[0].split('.')[0]
-              let minutes = event.hours[0].split('.')[1]
-              let meetupDate
-              if (hour && minutes) {
-                minutes.indexOf('*') !== -1 ? minutes = minutes.slice(0, -1) : minutes
-                meetupDate = new Date(
-                  year,
-                  month,
-                  day,
-                  hour,
-                  minutes,
-                  0,
-                  0
-                )
-              } else {
-                meetupDate = new Date(
-                  year,
-                  month,
-                  day,
-                  0,
-                  0,
-                  0,
-                  0
-                )
-              }
-              console.log(arrayPictures[i])
-              const SkateMeetup = {
-                title: event.day + ' - dawaj na łyżwy!',
-                description: 'Godziny ślizgawek: ' + event.hours.toString(),
-                date: meetupDate,
-                imageUrl: arrayPictures[i]
-              }
-              dispatch('createMeetupWithRandomImage', SkateMeetup)
-              commit('skateDataObtainedSucessfully')
-            })
-            commit('setLoading', false)
-          })
-          .catch(err => {
-            commit('setLoading', false)
-            console.log(err)
-          })
-      }
     },
     fetchICeSkatePicturesFromPixbay ({commit}) {
       axios.get('https://pixabay.com/api/?key=6932745-a00e3da6a9e2cc1f584da7044&q=hockey&image_type=photo%3Fper_page&pretty=true')

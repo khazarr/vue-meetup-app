@@ -16,6 +16,7 @@
                                 <div>
                                     <h5>{{ meetup.title }}</h5>
                                     <div>{{ meetup.date | date }}</div>
+                                    <div> {{meetup.description }}</div>
                                 </div>
                             </v-card-title>
                             <v-card-actions class="mt-0">

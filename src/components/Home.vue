@@ -69,8 +69,6 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchICeSkatePicturesFromPixbay')
-    this.$store.dispatch('fetchIceSkateData')
   }
 }
 </script>
