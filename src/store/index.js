@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
 import axios from 'axios'
+import FbKey from './secrets.js'
 
 Vue.use(Vuex)
 
@@ -279,6 +280,23 @@ export const store = new Vuex.Store({
             ...meetup,
             id: key
           })
+          /* eslint-disable no-undef */
+          const shareURL = 'localhost:8080/meetups/' + key
+          const shareMessage = meetup.title + ' ' + meetup.description
+          const link = 'tu-bedzie-super-link.com/meetups/' + key
+          console.log(shareURL)
+          FB.api(
+            '/190422544836963/feed',
+            'POST',
+            {
+              message: shareMessage,
+              link: link,
+              access_token: FbKey.FbKey
+            },
+            function (response) {
+              console.log(response)
+            }
+          )
         })
         .catch(err => {
           console.log(err)

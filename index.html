@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yt-meetup</title>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>yt-meetup</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId: '793174610852256',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v2.10'
+      });
+      FB.AppEvents.logPageView();
+    };
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
